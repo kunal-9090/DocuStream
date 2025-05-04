@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 215 50% 10%;
+    --foreground: 210 40% 98%;
+    
+    --card: 215 30% 16%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 215 30% 16%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 358 95% 45%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 217 71% 53%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 215 25% 25%;
+    --muted-foreground: 215 20% 65%;
+    
+    --accent: 47 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 215 30% 20%;
+    --input: 215 30% 20%;
+    --ring: 215 30% 20%;
+    
+    --radius: 0.5rem;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    font-family: 'Montserrat', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    background-image: url('https://cdn.marvel.com/content/2x/avengers_the_kang_dynasty_nav_placeholder_3.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-blend-mode: overlay;
+  }
+}
+
+@layer components {
+  .content-card {
+    @apply transition-transform duration-300 ease-in-out hover:scale-105 hover:z-10 hover:shadow-lg;
+  }
+  
+  .content-row {
+    @apply relative;
+  }
+  
+  .content-row:hover .scroll-button {
+    @apply opacity-100;
+  }
+  
+  .scroll-button {
+    @apply opacity-0 transition-opacity duration-300;
+  }
+  
+  .hero-gradient {
+    @apply bg-gradient-to-t from-background via-background/95 to-transparent;
+  }
+  
+  .points-earned {
+    @apply animate-pulse;
+  }
+  
+  .badge-glow {
+    @apply animate-pulse;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .main-content-container {
+    @apply bg-background/80 backdrop-blur-sm p-4 rounded-lg;
+  }
+  
+  .nav-container {
+    @apply bg-background/90 backdrop-blur;
+  }
+  
+  /* Avengers themed elements */
+  .avengers-accent-border {
+    @apply border-2 border-accent/70;
+  }
+  
+  .avengers-glow {
+    text-shadow: 0 0 5px theme('colors.accent.DEFAULT'), 0 0 10px theme('colors.accent.DEFAULT');
+  }
+  
+  .dark-card-gradient {
+    background: linear-gradient(to bottom, rgba(25, 33, 45, 0.9), rgba(15, 22, 35, 0.95));
+  }
+}
