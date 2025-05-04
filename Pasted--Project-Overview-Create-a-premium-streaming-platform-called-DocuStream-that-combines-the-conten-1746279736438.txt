@@ -1,0 +1,720 @@
+## Project Overview
+Create a premium streaming platform called "DocuStream" that combines the content delivery model of Netflix with advanced gamification features. DocuStream will focus on providing an engaging, rewarding user experience that incentivizes continuous viewing and content exploration through points, badges, challenges, and redeemable rewards.
+
+## Brand Identity
+
+### Name and Logo
+- Name: DocuStream
+- Tagline: "Watch. Earn. Discover."
+- Color Scheme: Primary dark background (#121212) with vibrant accent colors:
+  - Primary accent: #E50914 (bright red)
+  - Secondary accent: #00C9FF (bright cyan)
+  - Highlight: #FFD700 (gold for achievements/rewards)
+- Typography:
+  - Modern sans-serif font (Montserrat or similar)
+  - Clean, high-contrast text
+  - Headings in semi-bold or bold weight
+
+## Core Platform Architecture
+
+### User Authentication System
+- *Registration screen* with:
+  - Email/password
+  - Optional social logins (Google, Facebook, Apple)
+  - Age verification
+  - Subscription tier selection
+- *Login screen* with:
+  - Email/password fields
+  - "Remember me" option
+  - Password recovery
+  - Biometric login for mobile (if platform supports)
+- *User Profile* with:
+  - Customizable avatar (unlockable through achievements)
+  - Display name
+  - Viewing preferences
+  - Points balance (prominently displayed)
+  - Achievement showcase
+
+### Database Structure
+
+#### Users Table
+- UserID (primary key)
+- Email
+- PasswordHash
+- DisplayName
+- ProfileImageURL
+- JoinDate
+- LastLoginDate
+- SubscriptionTier
+- SubscriptionStartDate
+- SubscriptionEndDate
+- TotalPoints
+- CurrentLevel
+- WeeklyWatchCount
+- MonthlyWatchCount
+- AccountStatus
+- PreferredGenres (array)
+- PreferredLanguages (array)
+- DevicePreferences (object)
+- NotificationPreferences (object)
+
+#### Content Table
+- ContentID (primary key)
+- Title
+- Description
+- ShortDescription (for previews)
+- ReleaseDate
+- AddedDate
+- ThumbnailURL
+- BannerImageURL
+- VideoURL
+- TrailerURL
+- Duration (in minutes)
+- Type (Movie/Series/Documentary/etc.)
+- Genres (array)
+- Director
+- Cast (array)
+- Languages (array)
+- Subtitles (array)
+- AgeRating
+- ContentRating (0-5 stars)
+- ViewCount
+- RelatedContentIDs (array)
+- FeaturedScore (for recommendation algorithm)
+- Keywords (array)
+
+#### Series Table (for episodic content)
+- SeriesID (primary key)
+- Title
+- Description
+- Seasons (number)
+- TotalEpisodes
+- ReleaseYearStart
+- ReleaseYearEnd (if completed)
+- ThumbnailURL
+- BannerImageURL
+- Genres (array)
+- Creator
+- AgeRating
+
+#### Episodes Table
+- EpisodeID (primary key)
+- SeriesID (foreign key)
+- SeasonNumber
+- EpisodeNumber
+- Title
+- Description
+- Duration
+- ThumbnailURL
+- VideoURL
+- ReleaseDate
+- ViewCount
+
+#### UserContent Table (tracks user viewing)
+- ID (primary key)
+- UserID (foreign key)
+- ContentID (foreign key)
+- WatchPercentage
+- LastWatchDate
+- IsCompleted (boolean)
+- UserRating (0-5)
+- AddedToList (boolean)
+- ListType (Favorites, Watch Later, etc.)
+
+#### Points Transaction Table
+- TransactionID (primary key)
+- UserID (foreign key)
+- TransactionDate
+- PointsAmount (positive for earned, negative for spent)
+- TransactionType (Watching, Challenge, Quiz, Redemption, etc.)
+- ReferenceID (ID of related challenge, content, etc.)
+- Description
+- CurrentBalance (after transaction)
+
+#### Badges Table
+- BadgeID (primary key)
+- Name
+- Description
+- ImageURL
+- Category (Watching, Social, Explorer, etc.)
+- Tier (Bronze, Silver, Gold, Platinum)
+- RequirementType (Genre, Count, Time, etc.)
+- RequirementValue
+- RequirementGenre (if applicable)
+- PointValue
+- Rarity (Common, Uncommon, Rare, Epic, Legendary)
+- DisplayColor
+
+#### UserBadges Table
+- ID (primary key)
+- UserID (foreign key)
+- BadgeID (foreign key)
+- DateEarned
+- IsDisplayed (boolean)
+
+#### Challenges Table
+- ChallengeID (primary key)
+- Title
+- Description
+- ImageURL
+- StartDate
+- EndDate
+- RequirementType
+- RequirementValue
+- RequirementGenre (if applicable)
+- PointReward
+- BadgeReward (if applicable)
+- Difficulty (Easy, Medium, Hard)
+- IsRecurring (boolean)
+- RecurrencePattern (if applicable)
+
+#### UserChallenges Table
+- ID (primary key)
+- UserID (foreign key)
+- ChallengeID (foreign key)
+- ProgressValue
+- StartDate
+- CompletionDate
+- Status (Active, Completed, Failed)
+
+#### Rewards Table
+- RewardID (primary key)
+- Name
+- Description
+- ImageURL
+- PointCost
+- RewardType (Subscription, ExclusiveContent, Merchandise, etc.)
+- RewardValue
+- Quantity (for limited rewards)
+- AvailabilityStart
+- AvailabilityEnd
+- IsActive
+- RedemptionInstructions
+
+#### UserRewards Table
+- ID (primary key)
+- UserID (foreign key)
+- RewardID (foreign key)
+- RedemptionDate
+- ExpirationDate
+- RedemptionStatus (Pending, Active, Used, Expired)
+- RedemptionCode (if applicable)
+
+#### Quiz Table
+- QuizID (primary key)
+- RelatedContentID (foreign key)
+- Title
+- Description
+- PointsPerQuestion
+- BonusPoints
+- TimeLimit (seconds)
+- IsActive
+
+#### QuizQuestions Table
+- QuestionID (primary key)
+- QuizID (foreign key)
+- QuestionText
+- QuestionType (Multiple Choice, True/False)
+- Options (array of strings)
+- CorrectAnswer
+- Difficulty
+- Points
+
+#### UserQuizAttempts Table
+- AttemptID (primary key)
+- UserID (foreign key)
+- QuizID (foreign key)
+- DateAttempted
+- Score
+- PointsEarned
+- CompletionTime
+- CorrectAnswers
+- TotalQuestions
+
+## User Interface Design
+
+### Global UI Elements
+- *Navigation bar* (side or top):
+  - DocuStream logo (animated on hover)
+  - Main navigation items with subtle hover animations:
+    - Home
+    - Movies
+    - Series
+    - Documentaries
+    - My List
+    - Challenges
+    - Rewards
+  - Search icon/bar with predictive search
+  - User points display with glowing effect for recent earnings
+  - User profile icon/dropdown
+  - Notifications bell with counter
+- *Footer*:
+  - Links to terms, privacy, help
+  - Social media links
+  - Copyright info
+  - Language selector
+
+### Home Screen
+- *Hero Banner*:
+  - Auto-playing trailer for featured content
+  - Title overlay with brief description
+  - "Play" and "More Info" buttons
+  - Points icon showing potential points for watching
+- *Featured Content Carousel*:
+  - Large, high-quality thumbnails
+  - Smooth sliding animation
+  - Visual indicators for new or trending content
+- *Content Rows*:
+  - Categories organized by genre, trending, new releases
+  - Horizontally scrollable with smooth animations
+  - Thumbnails expand slightly on hover with info popup
+  - Small badges indicating potential points/challenges
+- *Continue Watching* section:
+  - Progress bar on thumbnails
+  - "Resume" button on hover
+  - Last watched timestamp
+- *My Challenges* section:
+  - Currently active challenges with progress bars
+  - Visual countdown for time-limited challenges
+  - Animated "complete" effect when finished
+- *Points Dashboard Mini-Widget*:
+  - Current points balance with animated counter
+  - Weekly/monthly progress bars
+  - Quick link to full dashboard
+
+### Content Detail Screen
+- *Immersive header*:
+  - Full-width banner image
+  - Trailer auto-play option
+  - Title with dynamic text shadow for readability
+  - Year, rating, duration, genres
+- *Content details*:
+  - Synopsis with "read more" expansion
+  - Cast and crew information
+  - Similar content recommendations
+- *Gamification elements*:
+  - Points value for watching
+  - Related challenges with join button
+  - Available badges for this content
+  - "Quiz available" indicator if applicable
+- *User engagement*:
+  - Like/dislike buttons with animated state changes
+  - Add to My List button
+  - Share button with social options
+  - Rating system with hover effects
+
+### Video Player
+- *Modern, minimal controls*:
+  - Play/pause with smooth fade in/out
+  - Volume with visual slider
+  - Timeline scrubber with preview thumbnails
+  - Quality selector with visual indicators
+  - Picture-in-picture option
+  - Fullscreen toggle
+- *Gamification overlay* (subtle, non-intrusive):
+  - Points accumulation indicator at key viewing milestones
+  - Challenge progress notification
+  - Badge earning notification with animation
+- *End of content screen*:
+  - Summary of points earned
+  - Quiz opportunity if available
+  - Related content recommendations
+  - Countdown to autoplay next episode (for series)
+
+### Gamification Dashboard
+- *Points Overview*:
+  - Current balance with large, animated counter
+  - Visual history graph (daily/weekly/monthly toggle)
+  - Recent transactions list with descriptive icons
+  - Progress to next level/tier with benefits preview
+- *Achievements Gallery*:
+  - Grid of badges with earned/unearned states
+  - Badge details on hover/click
+  - Sort and filter options
+  - Special effects for rare achievements
+  - Showcase selection for profile display
+- *Active Challenges*:
+  - Visual cards with challenge details
+  - Circular progress indicators
+  - Time remaining counters for timed challenges
+  - Reward preview
+  - "Abandon Challenge" option with confirmation
+- *Leaderboards*:
+  - Toggle between friends/global
+  - Animated ranking positions
+  - User profile thumbnails
+  - Points totals with visual bars
+  - Current user position highlighted
+  - Filter by time period (weekly/monthly/all-time)
+
+### Rewards Marketplace
+- *Featured Rewards* carousel:
+  - High-quality images of rewards
+  - Points cost with visual affordability indicator
+  - Limited availability countdown if applicable
+- *Rewards Categories*:
+  - Visual navigation between reward types
+  - Grid layout with consistent card design
+  - Visual "locked" state for unaffordable rewards
+- *Reward Detail*:
+  - Expanded information on click
+  - Benefits explanation
+  - Redemption process preview
+  - Terms and conditions
+  - "Redeem Now" button with confirmation dialog
+- *Redemption History*:
+  - List of past redemptions
+  - Status indicators (active, used, expired)
+  - Re-order option for eligible rewards
+
+### Quiz Interface
+- *Intro Screen*:
+  - Quiz title and description
+  - Related content thumbnail
+  - Points potential explanation
+  - Countdown timer
+  - "Begin Quiz" button with pulse animation
+- *Question Screen*:
+  - Clean, focused design with question prominently displayed
+  - Multiple choice options with hover effects
+  - Timer bar animation
+  - Question number/total indicator
+- *Results Screen*:
+  - Score with animated counter
+  - Points earned with celebration effect
+  - Correct/incorrect review
+  - "Try Again" or "Return to Content" options
+
+## Core Functionality Workflows
+
+### Point Earning System
+
+#### Video Completion Points
+
+When [User watches video]
+  Track [WatchPercentage]
+  When [WatchPercentage reaches 85%]
+    If [Not already marked as completed]
+      Add [Base Points = 10] to [User.TotalPoints]
+      Create [PointsTransaction]
+      Update [UserContent.IsCompleted = true]
+      Show [Points Earned Animation]
+      Check [Milestone achievements]
+
+
+#### Consistency Bonuses
+
+When [User completes video]
+  Increment [User.WeeklyWatchCount]
+  Increment [User.MonthlyWatchCount]
+  
+  If [User.WeeklyWatchCount = 5]
+    Add [Bonus Points = 50] to [User.TotalPoints]
+    Create [PointsTransaction]
+    Show [Weekly Achievement Animation]
+    
+  If [User.MonthlyWatchCount = 20]
+    Add [Bonus Points = 200] to [User.TotalPoints]
+    Create [PointsTransaction]
+    Show [Monthly Achievement Animation]
+    
+On [Start of new week]
+  Reset [User.WeeklyWatchCount = 0]
+  
+On [Start of new month]
+  Reset [User.MonthlyWatchCount = 0]
+
+
+#### Genre Exploration
+
+When [User completes video]
+  Get [Content.Genres]
+  For each [Genre] in [Content.Genres]
+    If [Genre NOT in User.WatchedGenres]
+      Add [Genre] to [User.WatchedGenres]
+      Add [Genre Exploration Points = 25] to [User.TotalPoints]
+      Create [PointsTransaction]
+      Show [New Genre Discovered Animation]
+      Check [Genre Explorer badges]
+
+
+### Achievement System
+
+#### Badge Earning Logic
+
+When [User action occurs] (video completion, milestone, etc.)
+  Check all [Badges] where [IsEarned = false]
+  For each [Badge]
+    If [Badge.RequirementType = ActionType]
+      If [User metrics meet Badge.RequirementValue]
+        Create [UserBadge]
+        Add [Badge.PointValue] to [User.TotalPoints]
+        Create [PointsTransaction]
+        Show [Badge Earned Animation]
+        Check [Badge Collection achievements]
+
+
+#### Sample Badge Triggers
+
+When [User.HorrorMoviesCompleted = 10]
+  Award [Badge: "Horror Enthusiast"]
+  
+When [User.WatchTimeNight > 5 hours] (between 12am-5am)
+  Award [Badge: "Night Owl"]
+  
+When [User.UniqueGenresWatched = 5]
+  Award [Badge: "Genre Explorer"]
+  
+When [User completes all episodes of Series]
+  Award [Badge: "Series Completionist"]
+  
+When [User.DocumentariesWatched = 10]
+  Award [Badge: "Documentary Buff"]
+  
+When [User.WeekendWatchTime > 3 hours]
+  Award [Badge: "Weekend Warrior"]
+
+
+### Challenge System
+
+#### Challenge Assignment
+
+On [Start of Week]
+  Select [3 Challenges] from [Available Challenges]
+    Where [Challenge matches User preferences]
+    And [Challenge difficulty appropriate for User level]
+  For each [Challenge]
+    Create [UserChallenge]
+    Set [UserChallenge.Status = "Active"]
+    Set [UserChallenge.StartDate = Current Date]
+    Set [UserChallenge.ProgressValue = 0]
+  Show [New Challenges Available Notification]
+
+
+#### Challenge Progress Tracking
+
+When [User completes video]
+  For each [UserChallenge] where [Status = "Active"]
+    If [Challenge.RequirementType = "Content"]
+      If [Content.ID matches Challenge criteria]
+        Increment [UserChallenge.ProgressValue]
+    
+    If [Challenge.RequirementType = "Genre"]
+      If [Content.Genres contains Challenge.RequirementGenre]
+        Increment [UserChallenge.ProgressValue]
+    
+    If [Challenge.RequirementType = "WatchTime"]
+      Add [Content.Duration] to [UserChallenge.ProgressValue]
+    
+    If [UserChallenge.ProgressValue >= Challenge.RequirementValue]
+      Set [UserChallenge.Status = "Completed"]
+      Set [UserChallenge.CompletionDate = Current Date]
+      Add [Challenge.PointReward] to [User.TotalPoints]
+      Create [PointsTransaction]
+      Show [Challenge Completed Animation]
+      
+      If [Challenge.BadgeReward is not null]
+        Award [Badge] to [User]
+
+
+#### Sample Challenges
+
+Challenge: "Weekend Binge"
+  Description: "Watch 5 hours of content over the weekend"
+  RequirementType: "WatchTime"
+  RequirementValue: 300 (minutes)
+  TimeConstraint: Saturday-Sunday
+  PointReward: 100
+  
+Challenge: "Horror Marathon"
+  Description: "Watch 3 horror movies this week"
+  RequirementType: "Genre"
+  RequirementGenre: "Horror"
+  RequirementValue: 3
+  PointReward: 75
+  
+Challenge: "Award Winners"
+  Description: "Watch 3 Oscar-nominated documentaries"
+  RequirementType: "ContentTag"
+  RequirementValue: 3
+  RequirementTag: "Oscar-Nominated"
+  PointReward: 125
+
+
+### Quiz System
+
+#### Quiz Availability
+
+When [User completes video]
+  Check if [Quiz exists] for [Content.ID]
+  If true:
+    Show [Quiz Available Notification]
+    If [User selects "Take Quiz"]
+      Load [Quiz Interface]
+
+
+#### Quiz Process
+
+When [User starts Quiz]
+  Load [Quiz Questions]
+  Start [Timer]
+  For each [Question]
+    Show [Question]
+    When [User selects Answer OR Timer expires]
+      If [Answer = Question.CorrectAnswer]
+        Add [Question.Points] to [QuizAttempt.Score]
+      Move to [Next Question]
+  
+  When [All Questions Answered]
+    Calculate [TotalScore]
+    If [QuizAttempt.CompletionTime < Quiz.TimeLimit]
+      Add [Quiz.BonusPoints] to [TotalScore]
+    
+    Add [TotalScore] to [User.TotalPoints]
+    Create [PointsTransaction]
+    Create [UserQuizAttempt]
+    Show [Quiz Results]
+
+
+### Rewards Redemption System
+
+#### Available Rewards
+
+When [User accesses Rewards Marketplace]
+  Load [Rewards] where:
+    [Reward.IsActive = true]
+    AND [Current Date between Reward.AvailabilityStart and Reward.AvailabilityEnd]
+    AND ([Reward.Quantity > 0] OR [Reward.Quantity is null])
+  
+  For each [Reward]
+    Calculate [IsAffordable = (User.TotalPoints >= Reward.PointCost)]
+    Display [Reward] with [IsAffordable] visual state
+
+
+#### Redemption Process
+
+When [User selects "Redeem" for Reward]
+  Show [Confirmation Dialog]
+  If [User confirms]
+    If [User.TotalPoints >= Reward.PointCost]
+      Subtract [Reward.PointCost] from [User.TotalPoints]
+      Create [PointsTransaction] (negative value)
+      Create [UserReward]
+      
+      If [Reward.RewardType = "Subscription"]
+        Add [Reward.RewardValue] months to [User.SubscriptionEndDate]
+      
+      If [Reward.RewardType = "ExclusiveContent"]
+        Grant [Access] to [Content.ID = Reward.RewardValue]
+      
+      If [Reward.RewardType = "Merchandise"]
+        Generate [RedemptionCode]
+        Set [UserReward.RedemptionCode = RedemptionCode]
+        Set [UserReward.RedemptionStatus = "Pending"]
+      
+      Show [Successful Redemption Animation]
+      Show [Redemption Instructions]
+    Else
+      Show [Insufficient Points Message]
+
+
+### Personalization and Recommendation System
+
+#### Watch History Analysis
+
+Every [24 hours] for each [User]
+  Analyze [UserContent] where [IsCompleted = true]
+  Calculate [Top 3 Genres]
+  Calculate [Preferred Watch Times]
+  Calculate [Average Session Duration]
+  Update [User.PreferredGenres]
+  Update [User.PreferredWatchTimes]
+  Update [User.ViewingPatterns]
+
+
+#### Next Best Action
+
+When [User visits Home Screen]
+  Get [User.ActiveChallenges]
+  Get [User.PreferredGenres]
+  Find [Unwatched Content] where:
+    [Content.Genres overlaps User.PreferredGenres]
+    AND [Content helps complete User.ActiveChallenges]
+  
+  Sort by [Challenge Completion Priority]
+  Display [Top 3 Recommendations] with:
+    Content thumbnail/info
+    "Watching this will earn you X points"
+    "Helps complete [Challenge Name]"
+    
+  If [User close to Badge achievement]
+    Show [Badge Progress] with:
+      "Watch X more [content type] to earn [Badge Name]"
+
+
+#### Personalized Content Journey
+
+Every [7 days] for each [User]
+  Create [Content Journey Challenge]
+    Select [5 Related Content Items]
+      Based on [User.PreferredGenres]
+      But [Including 1-2 Genre Expansion options]
+    Set [Journey Theme] (Director spotlight, Genre deep dive, etc.)
+    Set [Journey Points = 150]
+    Set [Journey Badge = "Content Explorer"]
+  
+  Add to [User.ActiveChallenges]
+  Show [Content Journey Notification]
+
+
+## Interactive Elements and Animations
+
+### Microinteractions
+- *Points Accumulation*:
+  - Floating "+10 points" animation when content completed
+  - Counter animation when points balance updates
+  - Pulse effect on points display for recent earnings
+- *Progress Indicators*:
+  - Animated circular progress for challenges
+  - Liquid-fill effect for milestone progress
+  - Stepped progress bar for levels
+- *Hover States*:
+  - Subtle scale and glow effect on content thumbnails
+  - Color shift and shadow on buttons
+  - Info panel slide-in on extended hover
+- *Notifications*:
+  - Toast notifications with slide-in animation
+  - Stacked notification management
+  - Pulse effect on notification bell when new
+
+### Achievement Celebrations
+- *Badge Unlock*:
+  - Full-screen overlay (semi-transparent)
+  - Badge zoom-in with particle effects
+  - Congratulatory text with typewriter effect
+  - Sound effect (if enabled by user)
+- *Challenge Complete*:
+  - Confetti animation
+  - Points counter animation
+  - "Share Achievement" button with social icons
+- *Level Up*:
+  - Radial burst animation
+  - New level display with benefits
+  - Applause sound effect (if enabled)
+
+## Mobile Adaptations
+
+### Responsive Design
+- Fluid layout adapting to screen sizes
+- Touch-optimized hitboxes for all interactive elements
+- Simplified navigation for smaller screens:
+  - Bottom navigation bar
+  - Collapsible categories
+  - Swipe gestures for content browsing
+- Optimized video player controls for touch
+
+### Mobile-Specific Features
+- *Offline Viewing*:
+  - Download manager
+  - Points awarded on offline viewing sync
+- **Push Notificatio
