@@ -29,5 +29,3 @@ DocuStream combines the appeal of high-quality documentaries with the motivation
 - Comment sections, forums, and discussions linked to each documentary.
 
 - Leaderboards for top contributors and quiz scorers.
-
-- “Study Groups” to watch, discuss, and learn together.
